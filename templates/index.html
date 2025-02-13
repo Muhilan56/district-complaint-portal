@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+       body {
+    font-family: 'Poppins', sans-serif;
+    background: url('https://i.pinimg.com/originals/d0/c6/04/d0c60459431b6ffaecf92fc902ca996d.gif') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    overflow: hidden; /* Prevent scrollbars */
+    position: relative;
+}
+
+/* Overlay to improve text readability */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dark overlay for better contrast */
+    z-index: 1; /* Lower z-index than .hero-section */
+}
+
+/* Ensure content is above the overlay */
+.hero-section {
+    position: relative;
+    z-index: 2; /* Higher z-index than ::before */
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+p.lead {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.btn-custom {
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    margin: 10px;
+    border: none;
+}
+
+.btn-primary {
+    background: #2575fc;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #1a5bbf;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+}
+
+.btn-success {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #218838;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    p.lead {
+        font-size: 1rem;
+    }
+
+    .btn-custom {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <h1>Welcome to the Complaint Management System</h1>
+        <p class="lead">Efficiently manage and resolve complaints with our user-friendly platform.</p>
+        <div class="mt-4">
+            <a href="/login" class="btn btn-primary btn-custom">Login</a>
+            <a href="/register" class="btn btn-success btn-custom">Register</a>
+        </div>
+    </div>
+</body>
+</html>

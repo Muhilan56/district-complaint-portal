@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        /* Background GIF */
+        body {
+            background-image: url('https://i.pinimg.com/originals/fa/8a/3c/fa8a3cb818b4b52f9ed7a2ec3419c963.gif');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            padding-bottom: 50px; /* Add padding to prevent content from sticking to the bottom */
+        }
+
+        /* Card-style container */
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: 50px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-weight: 500;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .btn-danger, .btn-success, .btn-secondary {
+            border-radius: 12px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn-danger {
+            float: right;
+            margin-bottom: 20px;
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .table th, .table td {
+            text-align: center;
+            padding: 15px;
+        }
+
+        /* Table styling */
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            background-color: rgba(184, 181, 181, 0.2);
+            color: white;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Hover effects on table rows */
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.05);
+        }
+
+        /* Fade-in animation */
+        .table tbody tr {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        <a href="/logout" class="btn btn-danger">Logout</a>
+        <a href="/loggedin_users" class="btn btn-danger">Users</a>
+        <h3 class="mt-4">All Complaints</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint.id }}</td>
+                    <td>{{ complaint.user_id }}</td>
+                    <td>{{ complaint.category }}</td>
+                    <td>{{ complaint.description }}</td>
+                    <td>{{ complaint.status }}</td>
+                    <td>
+                        {% if complaint.status == "Pending" %}
+                        <form action="{{ url_for('update_status', complaint_id=complaint.id) }}" method="POST">
+                            <button type="submit" class="btn btn-success">Mark Completed</button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary" disabled>Completed</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

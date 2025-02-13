@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-Login
+flask_bcrypt
+Werkzeug
+requests
+Flask-Mail
+torch
+transformers
+app
+gunicorn

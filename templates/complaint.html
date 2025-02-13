@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        /* Background GIF */
+        body {
+            background-image: url('https://i.pinimg.com/originals/5f/96/f3/5f96f392749a313e9650f24f0c8652ea.gif'); /* Replace with your background gif */
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: 'Roboto', sans-serif;
+            color: white;
+        }
+
+        /* Centering the form in the middle */
+        .container {
+            max-width: 600px;
+            margin-top: 100px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #f8f9fa;
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: fadeInText 1s ease-out;
+        }
+
+        /* Fade-in effect for header text */
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Input field styling */
+        .form-control {
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: #28a745;
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Button Styling */
+        .btn-warning {
+            width: 100%;
+            border-radius: 15px;
+            background-color: #ffcc00;
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff9900;
+            transform: scale(1.05);
+        }
+
+        /* Animation for form appearance */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Label Styling */
+        .form-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #f8f9fa;
+        }
+
+        /* Hover effect for the input and select fields */
+        .form-control:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            border-color: #ff9900;
+        }
+
+        /* Button Hover Effect */
+        .btn-warning:focus {
+            outline: none;
+            box-shadow: 0 0 10px #ff9900;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Submit a Complaint</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-control" required>
+                    <option value="Road Issues">Road Issues</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Water Supply">Water Supply</option>
+                    <option value="Sanitation">Sanitation</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">Submit Complaint</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
