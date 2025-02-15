@@ -5,6 +5,5 @@ flask_bcrypt
 Werkzeug
 requests
 Flask-Mail
-random
 app
 gunicorn
