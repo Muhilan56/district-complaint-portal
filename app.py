@@ -1,11 +1,10 @@
+import random
 from flask_bcrypt import Bcrypt
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_mail import Mail, Message
 from flask import Flask, render_template, request, jsonify
-import torch
-from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -25,17 +24,6 @@ bcrypt = Bcrypt(app)
 mail = Mail(app)
 
 
-tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-model = GPT2LMHeadModel.from_pretrained("gpt2")
-
-# Predefined responses for greetings
-greeting_responses = {
-    "hi": "Hi there! How can I assist you?",
-    "hai": "Hello! What can I do for you?",
-    "hello": "Hey! How's it going?",
-    "hey": "Hey! Need any help?",
-}
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -52,19 +40,6 @@ class Complaint(db.Model):
     status = db.Column(db.String(20), default="Pending")
 
 
-
-def generate_response(prompt):
-    prompt_lower = prompt.lower().strip()
-
-    # Check if input is a greeting
-    if prompt_lower in greeting_responses:
-        return greeting_responses[prompt_lower]
-
-    # Otherwise, use GPT-2 to generate a response
-    inputs = tokenizer.encode(prompt, return_tensors="pt")
-    outputs = model.generate(inputs, max_length=150, pad_token_id=tokenizer.eos_token_id)
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return response
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -124,20 +99,112 @@ def login():
     return render_template('login.html')
 
 
-@app.route("/chat1")
-def index():
+# Sample complaints database
+complaints = {}
+complaint_id_counter = 1
+
+responses = {
+    "greeting": [
+        "Hello! How can I assist you with your complaint today?",
+        "Hi there! What issue are you facing?",
+        "Greetings! How can I help you?",
+        "Welcome! Do you need assistance with a complaint?",
+        "Hello! What seems to be the problem?"
+    ],
+    "status": [
+        "Please provide your complaint ID to check the status.",
+        "I can check the status for you! What is your complaint ID?",
+        "Kindly share your complaint ID to proceed.",
+        "Checking status requires your complaint ID. Could you provide it?",
+        "To retrieve your complaint status, I'll need your complaint ID."
+    ],
+    "new_complaint": [
+        "Please describe your issue, and I will register a complaint for you.",
+        "I can help you file a complaint. What seems to be the problem?",
+        "Tell me about your issue, and I'll register it for you.",
+        "What problem are you facing? I’ll make sure to log it for you.",
+        "Feel free to describe your issue, and I'll take note of it."
+    ],
+    "thanks": [
+        "You're welcome! Have a great day!",
+        "Glad I could help!",
+        "Anytime! If you need further assistance, let me know.",
+        "You're most welcome! Reach out if you need anything else.",
+        "No problem! Wishing you a wonderful day ahead."
+    ],
+    "fallback": [
+        "I'm sorry, I didn't understand that. Can you please rephrase?",
+        "Could you clarify that? I'm here to help!",
+        "I'm not sure I follow. Could you explain differently?",
+        "That doesn’t seem clear to me. Could you rephrase it?",
+        "I’m having trouble understanding. Could you say it another way?"
+    ],
+    "laws": [
+        "Consumer protection laws ensure your rights when filing complaints.",
+        "Legal frameworks provide safety measures for consumers.",
+        "Did you know? Many laws protect your rights against unfair practices.",
+        "Laws exist to make sure your complaints are heard and resolved fairly.",
+        "Consumer rights include refund policies, safety standards, and fair treatment."
+    ],
+    "common_complaints": [
+        "Frequent complaints include service delays, faulty products, and billing errors.",
+        "People often report issues like poor customer service and fraud.",
+        "Common complaints involve contract disputes, defective goods, and misinformation.",
+        "Issues related to delivery failures and incorrect charges are commonly reported.",
+        "Many customers file complaints about unauthorized deductions and data breaches."
+    ]
+}
+
+def get_bot_response(user_input):
+    global complaint_id_counter
+    user_input = user_input.lower()
+    
+    if "hello" in user_input or "hi" in user_input:
+        return random.choice(responses["greeting"])
+    elif "status" in user_input:
+        return random.choice(responses["status"])
+    elif "complaint" in user_input or "issue" in user_input:
+        return random.choice(responses["new_complaint"])
+    elif "thank" in user_input:
+        return random.choice(responses["thanks"])
+    elif "law" in user_input or "rights" in user_input:
+        return random.choice(responses["laws"])
+    elif "common" in user_input or "frequent" in user_input:
+        return random.choice(responses["common_complaints"])
+    else:
+        return random.choice(responses["fallback"])
+
+@app.route("/chat")
+def comment():
     return render_template("chat.html")
 
-@app.route("/chat", methods=["POST"])
+@app.route("/get", methods=["GET", "POST"])
 def chat():
-    data = request.get_json()  
-    user_input = data.get("message", "").strip()
+    user_message = request.form["msg"]
+    bot_response = get_bot_response(user_message)
+    return jsonify({"response": bot_response})
 
-    if not user_input:
-        return jsonify({"error": "Message is required"}), 400
+@app.route("/submit_complaint", methods=["POST"])
+def submit_complaint():
+    global complaint_id_counter
+    data = request.json
+    complaint_text = data.get("complaint")
+    
+    if complaint_text:
+        complaint_id = complaint_id_counter
+        complaints[complaint_id] = {"text": complaint_text, "status": "Pending"}
+        complaint_id_counter += 1
+        return jsonify({"message": "Complaint registered successfully!", "complaint_id": complaint_id})
+    else:
+        return jsonify({"error": "Complaint text is required."}), 400
 
-    response = generate_response(user_input)
-    return jsonify({"reply": response})
+@app.route("/check_status/<int:complaint_id>", methods=["GET"])
+def check_status(complaint_id):
+    if complaint_id in complaints:
+        return jsonify({"complaint_id": complaint_id, "status": complaints[complaint_id]["status"]})
+    else:
+        return jsonify({"error": "Complaint ID not found."}), 404
+
 
 
 @app.route('/logout')
@@ -207,6 +274,8 @@ def update_status(complaint_id):
 
     flash("Complaint status updated!", "success")
     return redirect(url_for('admin_dashboard'))
+
+
 
 
 @app.route('/loggedin_users')
